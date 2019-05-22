@@ -44,30 +44,30 @@ class CarController(object):
 
         return log
 
-    def move_forward(self,speed=0):
+    def move_forward(self):
         if self.CUR_SPEED<self.MAX_SPEED:
             self.CUR_SPEED+=1
-        print("car moving forward with speed ",self.CUR_SPEED)
-    def move_backward(self,speed=0):
+        return "car moving forward with speed %s"%self.CUR_SPEED
+    def move_backward(self):
         if self.CUR_SPEED>-self.MAX_SPEED:
             self.CUR_SPEED-=1
-        print("car moving backward with speed:",self.CUR_SPEED)
+        return "car moving backward with speed: %s" % self.CUR_SPEED
     def turn_right(self):
-        print("car turnning right")
+        return "car turnning right"
     def turn_left(self):
-        print("car turnning left")
+        return "car turnning left"
 
     def car_break(self):
         if(self.CUR_SPEED!=0):
             self.CUR_SPEED=self.CUR_SPEED+(1 if self.CUR_SPEED<0 else -1)
-            print('Breaking... %d'%self.CUR_SPEED)
+            print 'Breaking... %d'%self.CUR_SPEED
         else:
-            print("Car already stopped.")
+            print "Car already stopped."
         return 
     def X_pressed(self):
-        print("X pressed!")
+        # print("X pressed!")
         self.CUR_SPEED=0
-        print('Speed set to 0')
+        return 'Speed set to 0'
     def fetch_current_coor(self):
         cy=(ADC.read(0)-self.oy)
         if cy>0:
@@ -114,6 +114,8 @@ class CarController(object):
                 self.turn_right()
             if p==0:
                 self.X_pressed()
+            self.CUR_DIR=(y,x)
+
     def destroy(self):
         print("Controller Exit!")
 
