@@ -34,6 +34,7 @@ class PiCar:
 
 if __name__ == '__main__':
     car=PiCar(debug=True)
+
     car.front_wheels.ready()
     try:
         car.front_wheels.turn_left()

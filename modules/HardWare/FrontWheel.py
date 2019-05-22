@@ -11,9 +11,10 @@ class Front_Wheels(object):
 		self.db = fileDB(db=db)
 		self.channel = channel
 		self.straight_angle = 90
-		self.turning_max = 150
+		self.turning_max = 45
 		self.DEBUG_INFO = 'DEBUG "front_wheels.py":'
-		self.turning_offset = int(self.db.get('turning_offset', default_value=0))
+		# self.turning_offset = int(self.db.get('turning_offset', default_value=0))
+		self.turning_offset = 25
 		self.wheel = Servo(self.channel, bus_number=bus_number, offset=self.turning_offset)
 		self.DEBUG = debug
 		self.set_turning_max(45)
@@ -138,7 +139,9 @@ class Front_Wheels(object):
 import time
 if __name__ == '__main__':
 	fw=Front_Wheels()
-	# fw.wheel.write(fw.angle['straight'])
+	# fw.ready()
+	fw.wheel.write(fw.angle['straight'])
+	time.sleep(3)
 	for ang in xrange(-30,30,5):
 		time.sleep(1)
 		print(ang)
