@@ -4,7 +4,7 @@ from CarControler import CarController
 CC=CarController()
 CCgen=CC.listen_gen()
 s = socket.socket()
-IP='192.168.1.176'
+IP='192.168.1.179'
 PORT = 12345
 s.connect((IP,PORT))
 try:

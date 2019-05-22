@@ -1,3 +1,4 @@
+
 from HardWare.BackWheel import Back_Wheels
 from HardWare.FrontWheel import Front_Wheels
 from HardWare.Ultrasonic import Ultrasonic_Avoidance
@@ -18,7 +19,7 @@ class PiCar:
 #     def test_light(self):
 #         self.LF.read
     def test_wheels(self):
-        DELAY=3
+        DELAY=1
         self.move_forward()
         self.stop_after(DELAY)
         self.back_wheels.backward()
@@ -32,5 +33,14 @@ class PiCar:
             time.sleep(DELAY)
 
 if __name__ == '__main__':
-    car=PiCar()
-    car.test_wheels()
+    car=PiCar(debug=True)
+    car.front_wheels.ready()
+    try:
+        car.front_wheels.turn_left()
+        time.sleep(1)
+        car.front_wheels.turn_right()
+        time.sleep(1)
+        car.front_wheels.ready()
+    except KeyboardInterrupt:
+        car.back_wheels.speed=0
+        raise

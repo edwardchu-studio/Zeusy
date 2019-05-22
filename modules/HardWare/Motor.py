@@ -1,3 +1,5 @@
+import os,sys
+sys.path.append('~/Lab/Zeusy')
 import RPi.GPIO as GPIO
 import time
 

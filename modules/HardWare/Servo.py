@@ -1,3 +1,6 @@
+import os,sys
+sys.path.append('~/Lab/Zeusy')
+from PWM import PWM
 class Servo(object):
     '''Servo driver class'''
     _MIN_PULSE_WIDTH = 600

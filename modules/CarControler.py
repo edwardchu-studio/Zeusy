@@ -1,5 +1,5 @@
 import os
-from modules.HardWare import PCF8591 as ADC
+from HardWare import PCF8591 as ADC
 import time
 import json
 

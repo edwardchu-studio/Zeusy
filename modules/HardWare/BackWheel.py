@@ -1,3 +1,9 @@
+import os,sys
+sys.path.append('~/Lab/Zeusy')
+from fileDB import fileDB
+from Motor import Motor
+from PWM import PWM
+
 class Back_Wheels(object):
 	''' Back wheels control class '''
 	Motor_A = 17
@@ -165,3 +171,5 @@ class Back_Wheels(object):
 		finally:
 			print("Finished, motor stop")
 			back_wheels.stop()
+if __name__ == '__main__':
+    bw=Back_Wheels()

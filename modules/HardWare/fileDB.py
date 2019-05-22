@@ -1,26 +1,7 @@
-'''
-**********************************************************************
-* Filename    : filedb.py
-* Description : A simple file based database.
-* Author      : Cavon
-* Brand       : SunFounder
-* E-mail      : service@sunfounder.com
-* Website     : www.sunfounder.com
-* Update      : Cavon    2016-09-13    New release
-**********************************************************************
-'''
-
-
+import sys
+sys.path.append('/home/pi/tmp/pycharm_project_445/modules/HardWare')
 class fileDB(object):
-    """A file based database.
-
-    A file based database, read and write arguements in the specific file.
-    """
-
     def __init__(self, db=None):
-        '''Init the db_file is a file to save the datas.'''
-
-        # Check if db_file is defined
         if db != None:
             self.db = db
         else:
