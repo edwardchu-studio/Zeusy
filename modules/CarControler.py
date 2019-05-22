@@ -1,7 +1,7 @@
-import PCF8591 as ADC
+import os
+from modules.HardWare import PCF8591 as ADC
 import time
 import json
-import os,sys
 
 class CarController(object):
     def __init__(self):
@@ -9,13 +9,12 @@ class CarController(object):
         self.STATUS_PANE=['still','forward','rear','left','right','x']
         self.oy,self.ox,self.op=ADC.read(0),ADC.read(1),ADC.read(2)
         self.CURRENT_STATUS=''
-        self.ground_threshold=0.03
+        self.ground_threshold=0.05
         if os.path.exists('ground.json'):
             self.ground=json.load(open('ground.json'))
         else:
-            print("Please adjust the ground")
+            print "ground.json not found, Please adjust the ground."
             self.ground=self.adjust_ground()
-        
         self.CUR_SPEED=0.0
         self.CUR_DIR=(0.,0.)
         self.MAX_SPEED=120
@@ -44,6 +43,35 @@ class CarController(object):
 
         return log
 
+    def fetch_current_coor(self):
+        cy = (ADC.read(0) - self.oy)
+        if cy > 0:
+            cy /= float(self.ground['y'][1] - self.oy)
+        else:
+            cy /= float(self.oy - self.ground['y'][0])
+
+        cx = (ADC.read(1) - self.ox)
+        if cx > 0:
+            cx /= float(self.ground['x'][1] - self.ox)
+        else:
+            cx /= float(self.ox - self.ground['x'][0])
+
+        cp = ADC.read(2) / float(self.ground['p'][1])
+        if abs(cx) < self.ground_threshold:
+            cx = 0.
+        elif abs(cx - 1) < self.ground_threshold:
+            cx = 1.
+        if abs(cy) < self.ground_threshold:
+            cy = 0.
+        elif abs(cy - 1) < self.ground_threshold:
+            cy = 1.
+
+        if abs(cp) < self.ground_threshold:
+            cp = 0.
+        elif abs(cp - 1) < self.ground_threshold:
+            cp = 1.
+        return cy, cx, cp
+
     def move_forward(self):
         if self.CUR_SPEED<self.MAX_SPEED:
             self.CUR_SPEED+=1
@@ -64,41 +92,15 @@ class CarController(object):
         else:
             print "Car already stopped."
         return 
+
     def X_pressed(self):
         # print("X pressed!")
         self.CUR_SPEED=0
         return 'Speed set to 0'
-    def fetch_current_coor(self):
-        cy=(ADC.read(0)-self.oy)
-        if cy>0:
-            cy/=float(self.ground['y'][1]-self.oy)
-        else:
-            cy/=float(self.oy-self.ground['y'][0])
-        
-        cx=(ADC.read(1)-self.ox)
-        if cx>0:
-            cx/=float(self.ground['x'][1]-self.ox)
-        else:
-            cx/=float(self.ox-self.ground['x'][0])
-
-        cp=ADC.read(2)/float(self.ground['p'][1])
-        if abs(cx)<self.ground_threshold:
-            cx=0.
-        elif abs(cx-1)<self.ground_threshold:
-            cx=1.
-        if abs(cy)<self.ground_threshold:
-            cy=0.
-        elif abs(cy-1)<self.ground_threshold:
-            cy=1.
-
-        if abs(cp)<self.ground_threshold:
-            cp=0.
-        elif abs(cp-1)<self.ground_threshold:
-            cp=1.
-        return cy,cx,cp 
     def loop_coor(self):
         while(True):
             print(ADC.read(0),ADC.read(1),ADC.read(2),self.fetch_current_coor())
+
     def loop(self):
         while(True):
             y,x,p=self.fetch_current_coor()
@@ -123,9 +125,22 @@ class CarController(object):
         print("Initilization Finished")
         try:
             self.loop()
+            # self.loop_coor()
         except KeyboardInterrupt:
             self.destroy()
-    
+
+    def listen_gen(self):
+        print "Initialization Finished."
+        try:
+            while True:
+                y,x,p=self.fetch_current_coor()
+                yield (y,x,p)
+        except KeyboardInterrupt:
+            self.destroy()
+
 if __name__=='__main__':
     CC=CarController()
-    CC.listen()
+    # CC.listen()
+    CCg=CC.listen_gen()
+    for i in range(100):
+        print next(CCg)
